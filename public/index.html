@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Amplify — event awareness agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo-dot"></span>
+      <span class="wordmark">amplify</span>
+      <span class="tagline">event awareness agent · NYC + Houston</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-view="flow">Compose</button>
+      <button class="tab" data-view="contacts">Contacts</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- ============ FLOW VIEW ============ -->
+    <section id="view-flow" class="view active">
+      <ol class="steps">
+        <li class="step active" data-step="1"><span>1</span> Brief</li>
+        <li class="step" data-step="2"><span>2</span> Channels</li>
+        <li class="step" data-step="3"><span>3</span> Drafts &amp; send</li>
+      </ol>
+
+      <!-- Step 1: Event brief -->
+      <section id="step-1" class="panel active">
+        <h1 class="display">Tell us about the event.</h1>
+        <p class="sub">We adapt length &amp; frame. We never rewrite your voice.</p>
+
+        <div class="field">
+          <label>Event type</label>
+          <div class="segmented" id="event-type">
+            <button type="button" class="seg active" data-type="my_event">My event</button>
+            <button type="button" class="seg" data-type="partner">Partner event</button>
+            <button type="button" class="seg" data-type="collab">Collab</button>
+          </div>
+        </div>
+
+        <div id="fetch-block" class="field hidden">
+          <label>Partner URL <span class="hint">Partiful, Luma, or Eventbrite</span></label>
+          <div class="row">
+            <input type="url" id="fetch-url" placeholder="https://partiful.com/e/..." />
+            <button type="button" id="fetch-btn" class="btn accent-pink">Fetch</button>
+          </div>
+          <div id="fetch-status" class="status"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Event name</label>
+            <input type="text" id="ev-name" placeholder="Midnight Market Vol. 4" />
+          </div>
+          <div class="field">
+            <label>Date <span id="ev-dow" class="hint"></span></label>
+            <input type="date" id="ev-date" />
+          </div>
+          <div class="field">
+            <label>Time — start</label>
+            <input type="time" id="ev-start" />
+          </div>
+          <div class="field">
+            <label>Time — end</label>
+            <div class="row">
+              <input type="time" id="ev-end" />
+              <label class="check"><input type="checkbox" id="ev-no-end" /> no end time</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Venue name</label>
+            <input type="text" id="ev-venue" placeholder="The Front Room" />
+          </div>
+          <div class="field">
+            <label>Address</label>
+            <input type="text" id="ev-address" placeholder="123 Kent Ave, Brooklyn, NY" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Blurb <span class="hint">your own words — we'll preserve them</span></label>
+          <textarea id="ev-blurb" rows="5" placeholder="an evening of..."></textarea>
+        </div>
+
+        <div id="my-event-only" class="field my-only">
+          <label>Include platform drafts</label>
+          <div class="chip-row">
+            <label class="chip"><input type="checkbox" id="inc-eventbrite" /> Eventbrite draft</label>
+            <label class="chip"><input type="checkbox" id="inc-partiful" /> Partiful draft</label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <span></span>
+          <button type="button" class="btn primary" data-next="2">Next — channels →</button>
+        </div>
+      </section>
+
+      <!-- Step 2: Channels -->
+      <section id="step-2" class="panel">
+        <h1 class="display">Where should this land?</h1>
+        <p class="sub">Pick the channels. We'll draft each one.</p>
+
+        <div class="channel-grid">
+          <label class="channel-card" data-channel="journalist_email">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">Journalist email</div>
+              <div class="c-sub">Short pitch to a local culture reporter.</div>
+            </div>
+          </label>
+          <label class="channel-card" data-channel="subscriber_email">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">Shopify subscriber email</div>
+              <div class="c-sub">Warm invite to your list.</div>
+            </div>
+          </label>
+          <label class="channel-card" data-channel="reddit_nyc">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">Reddit — r/nyc + r/queens</div>
+              <div class="c-sub">Two low-key posts, not self-promo-y.</div>
+            </div>
+          </label>
+          <label class="channel-card" data-channel="whatsapp_broadcast">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">WhatsApp broadcast</div>
+              <div class="c-sub">One share-friendly message.</div>
+            </div>
+          </label>
+          <label class="channel-card" data-channel="substack_post">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">Substack post</div>
+              <div class="c-sub">A short essayistic post.</div>
+            </div>
+          </label>
+          <label class="channel-card my-only" data-channel="eventbrite_listing">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">Eventbrite listing</div>
+              <div class="c-sub">Title + description + details.</div>
+            </div>
+          </label>
+          <label class="channel-card my-only" data-channel="partiful_copy">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">Partiful invite</div>
+              <div class="c-sub">Name, tagline, description.</div>
+            </div>
+          </label>
+          <label class="channel-card" data-channel="imessage">
+            <input type="checkbox" />
+            <div>
+              <div class="c-title">iMessage to friends</div>
+              <div class="c-sub">Fixed template. Local only (Mac).</div>
+            </div>
+          </label>
+        </div>
+
+        <div id="imessage-contacts" class="field hidden">
+          <label>iMessage — pick groups to include</label>
+          <div id="group-chips" class="chip-row"></div>
+          <div id="imessage-preview" class="preview-box"></div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn ghost" data-back="1">← Back</button>
+          <button type="button" class="btn primary" id="generate-btn">Generate drafts →</button>
+        </div>
+      </section>
+
+      <!-- Step 3: Drafts -->
+      <section id="step-3" class="panel">
+        <h1 class="display">Your drafts.</h1>
+        <p class="sub">Edit anything. Copy, send, or tweak.</p>
+
+        <div id="drafts"></div>
+
+        <div id="imessage-panel" class="imessage-panel hidden">
+          <div class="im-header">
+            <div>
+              <div class="c-title">iMessage send</div>
+              <div class="c-sub">45–90s random delay between sends. Local only.</div>
+            </div>
+            <button id="im-send-btn" class="btn accent-blue">Send iMessages</button>
+          </div>
+          <div id="im-progress" class="im-progress"></div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn ghost" data-back="2">← Back</button>
+          <button type="button" class="btn ghost" id="restart">Start over</button>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ CONTACTS VIEW ============ -->
+    <section id="view-contacts" class="view">
+      <h1 class="display">Contacts.</h1>
+      <p class="sub">Tag people by group. Drag in a .vcf file or add manually.</p>
+
+      <div class="grid-2">
+        <form id="contact-form" class="card">
+          <div class="field">
+            <label>Name</label>
+            <input type="text" name="name" required />
+          </div>
+          <div class="field">
+            <label>Phone</label>
+            <input type="tel" name="phone" placeholder="+1 917 555 0123" required />
+          </div>
+          <div class="field">
+            <label>Group tags <span class="hint">comma separated, e.g. local friends, press</span></label>
+            <input type="text" name="tags" placeholder="local friends" />
+          </div>
+          <button class="btn primary" type="submit">Add contact</button>
+        </form>
+
+        <div id="drop-zone" class="card drop">
+          <div class="drop-inner">
+            <div class="drop-title">Drop a .vcf file</div>
+            <div class="drop-sub">Auto-parse name + phone. Tag them as a group.</div>
+            <input type="text" id="vcf-tag" placeholder="group tag (e.g. influencers)" />
+            <input type="file" id="vcf-input" accept=".vcf,text/vcard" hidden />
+            <button type="button" class="btn ghost" id="vcf-pick">or pick a file</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card contacts-card">
+        <div class="contacts-head">
+          <strong>All contacts</strong>
+          <input type="search" id="contact-search" placeholder="search name, phone, tag" />
+        </div>
+        <ul id="contact-list" class="contact-list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
